@@ -6,7 +6,7 @@ import VideoList from './components/video_list/video_list';
 
 function App({youtube}) {
   const [videos, setVideos] = useState([]);
-  const [error, setError] = useState([]);
+  const [iserror, setError] = useState('');
   const [selectedVideo, setselectedVideo] = useState(null);
 
   const selectVideo = (video) => {
@@ -24,34 +24,37 @@ function App({youtube}) {
       .mostPopular()
       .then(result => setVideos(result))
       .catch(error => {
-        if(error.code==403) setError('403');
+        console.log(typeof(error.response.status));
+        if(error.response.status === 403) setError('403');
+
       });
   }, [youtube]);
 
   return (
     <div className={styles.app}>
-      {error == 403 ? '오늘 Youtube APi 요청 횟수가 초과되었습니다😥': 
-      <>
-        <SearchHeader 
-          onSearch={search}
-          setselectedVideo={setselectedVideo}
-        />
-        <section className={styles.content}>
-          {selectedVideo && (
-            <div className={styles.detail}>
-              <VideoDetail video={selectedVideo} />
-            </div>)
-          }
-          <div className={styles.list}>
-            <VideoList
-              videos={videos}
-              onVideoClick={selectVideo}
-              display={selectedVideo ? 'list' : 'grid'}
-            />
-          </div>
-        </section>
-      </>
-      }
+
+      <SearchHeader 
+        onSearch={search}
+        setselectedVideo={setselectedVideo}
+      />
+      <section className={styles.content}>
+        { iserror ? '오늘 Youtube APi 요청 횟수가 초과되었습니다😥':
+        <>
+        {selectedVideo && (
+          <div className={styles.detail}>
+            <VideoDetail video={selectedVideo} />
+          </div>)
+        }
+        <div className={styles.list}>
+          <VideoList
+            videos={videos}
+            onVideoClick={selectVideo}
+            display={selectedVideo ? 'list' : 'grid'}
+          />
+        </div>
+        </>
+}
+      </section>
     </div>
   );
 }

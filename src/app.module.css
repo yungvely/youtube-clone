@@ -4,6 +4,10 @@
 
 .content {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88vh;
+  width: 100%;
 }
 
 .detail {
